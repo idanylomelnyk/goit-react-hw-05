@@ -20,8 +20,6 @@ export default function MovieReviews() {
     fetchReviews();
   }, [movieID]);
 
-  console.log(reviews);
-
   return (
     <>
       <ul className={css.list}>

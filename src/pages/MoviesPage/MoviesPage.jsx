@@ -1,40 +1,39 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { getMovieByQuery } from "../../api";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import css from "./MoviesPage.module.css";
 import Loader from "../../components/Loader/Loader";
 import Error from "../../components/Error/Error";
+import MovieList from "../../components/MovieList/MovieList";
 
 export default function MoviesPage() {
   const [query, setQuery] = useState("");
-  const [movieList, setMovieList] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const posterBasepath = "https://image.tmdb.org/t/p/w500";
 
   const movieQueryValue = searchParams.get("movie") ?? "";
+
+  useEffect(() => {
+    if (movieQueryValue) {
+      setQuery(movieQueryValue);
+    }
+  }, [movieQueryValue]);
 
   const updateQueryParam = (newQuery) => {
     searchParams.set("movie", newQuery);
     setSearchParams(searchParams);
   };
 
-  useMemo(() => {
-    if (movieQueryValue) {
-      setQuery(movieQueryValue);
-    }
-  }, [movieQueryValue]);
-
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newQuery = e.target.elements.movie.value.trim();
 
     setQuery(newQuery);
     updateQueryParam(newQuery);
     e.target.reset();
-  }
+  };
 
   useEffect(() => {
     if (query === "") {
@@ -42,6 +41,7 @@ export default function MoviesPage() {
     }
 
     const fetchMovies = async () => {
+      setIsLoading(true);
       try {
         const data = await getMovieByQuery(query);
 
@@ -51,10 +51,10 @@ export default function MoviesPage() {
           setError(false);
         }
 
-        setMovieList(data);
-        setIsLoading(true);
+        setMovies(data);
       } catch (error) {
         console.log(error.message);
+        setError(true);
       } finally {
         setIsLoading(false);
       }
@@ -75,28 +75,9 @@ export default function MoviesPage() {
           autoFocus
         />
       </form>
-
       {error && <Error />}
-
       {isLoading && <Loader />}
-      <ul className={css.list}>
-        {movieList.map((movie) => (
-          <li className={css.item} key={movie.id}>
-            <Link
-              className={css.link}
-              to={`/movies/${movie.id}`}
-              state={location}>
-              <img
-                className={css.img}
-                src={posterBasepath + movie.poster_path}
-                width="200px"
-                alt="movie-poster"
-              />
-              <h2 className={css.title}>{movie.title}</h2>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {!isLoading && !error && <MovieList movies={movies} />}
     </>
   );
 }

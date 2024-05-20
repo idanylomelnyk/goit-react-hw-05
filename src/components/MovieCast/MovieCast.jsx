@@ -21,7 +21,6 @@ export default function MovieCast() {
     fetchMovies();
   }, [params]);
 
-  console.log(cast);
 
   return (
     <>

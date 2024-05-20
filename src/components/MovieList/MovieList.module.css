@@ -1,0 +1,29 @@
+.list {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.item {
+  flex-basis: 250px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.img {
+  display: block;
+}
+
+.title {
+  text-align: center;
+  display: block;
+  padding: 10px;
+  color: black;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+}

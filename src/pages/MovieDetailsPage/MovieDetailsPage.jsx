@@ -12,8 +12,6 @@ export default function MovieDetailsPage() {
 
   const backLinkRef = useRef(location.state ?? "/");
 
-  console.log(backLinkRef);
-
   useEffect(() => {
     const fetchMoviesByID = async () => {
       try {
@@ -34,7 +32,7 @@ export default function MovieDetailsPage() {
         <img
           src={imageBaseURL + movieDetails.poster_path}
           width="250px"
-          alt=""
+          alt="poster"
         />
         <div className={css.info}>
           <h1 className={css.title}>{movieDetails.original_title}</h1>
